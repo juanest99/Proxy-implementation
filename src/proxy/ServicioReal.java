@@ -23,7 +23,7 @@ public class ServicioReal implements Service {
         int opt;
         do {
             String menu = """
-                    🛠️ MENÚ ADMINISTRADOR
+                    MENU ADMINISTRADOR
                     1. Agregar palabra
                     2. Ver palabras
                     3. Salir
@@ -33,20 +33,26 @@ public class ServicioReal implements Service {
             opt = Integer.parseInt(input);
 
             switch (opt) {
-                case 1 -> {
+                case 1:
                     String texto = JOptionPane.showInputDialog(null, "Ingrese nueva palabra (5 letras):");
                     if (texto != null && texto.length() == 5) {
                         GestorPalabras.agregarPalabra(new Palabra(texto));
-                        JOptionPane.showMessageDialog(null, "✅ Palabra agregada correctamente.");
+                        JOptionPane.showMessageDialog(null, "Palabra agregada correctamente.");
                     } else {
-                        JOptionPane.showMessageDialog(null, "❌ Debe tener 5 letras.");
+                        JOptionPane.showMessageDialog(null, "La palabra no corresponde a lo pedido");
                     }
-                }
-                case 2 -> {
+                    break;
+
+                case 2:
                     JOptionPane.showMessageDialog(null, "Palabras disponibles: " + GestorPalabras.cargarPalabras());
-                }
-                case 3 -> JOptionPane.showMessageDialog(null, "👋 Cerrando sesión admin...");
-                default -> JOptionPane.showMessageDialog(null, "Opción no válida");
+                break;
+
+                case 3:
+                    JOptionPane.showMessageDialog(null, "Cerrando sesion admin");
+                    break;
+                default:
+                    JOptionPane.showMessageDialog(null, "NO");
+                    break;
             }
         } while (opt != 3);
     }
@@ -55,7 +61,7 @@ public class ServicioReal implements Service {
         int opt;
         do {
             String menu = """
-                    🎮 MENÚ JUGADOR
+                    MENU JUGADOR
                     1. Jugar Wordle
                     2. Salir
                     """;
@@ -64,9 +70,15 @@ public class ServicioReal implements Service {
             opt = Integer.parseInt(input);
 
             switch (opt) {
-                case 1 -> new Logic().jugar();
-                case 2 -> JOptionPane.showMessageDialog(null, "👋 Cerrando sesión jugador...");
-                default -> JOptionPane.showMessageDialog(null, "Opción no válida");
+                case 1:
+                    new Logic().jugar();
+                    break;
+                case 2:
+                    JOptionPane.showMessageDialog(null, "Cerrando sesion jugador");
+                    break;
+                default:
+                    JOptionPane.showMessageDialog(null, "NO");
+                    break;
             }
         } while (opt != 2);
     }

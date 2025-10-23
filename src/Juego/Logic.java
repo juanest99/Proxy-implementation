@@ -1,31 +1,50 @@
 package Juego;
 
 import javax.swing.*;
+import java.util.List;
 
 public class Logic{
-    private Palabra palabraSecreta;
-
-    public Logic() {
-        this.palabraSecreta = GestorPalabras.palabraAleatoria();
-    }
-
     public void jugar() {
-        if (palabraSecreta == null) {
-            JOptionPane.showMessageDialog(null, "No hay palabras disponibles. Contacta al admin.");
+        List<Palabra> palabras = GestorPalabras.cargarPalabras();
+        if (palabras.isEmpty()) {
+            JOptionPane.showMessageDialog(null, "Parece que no tenemos palabras disponibles, solicita a un admin");
             return;
         }
 
-        String secreta = palabraSecreta.getTexto();
+        StringBuilder opciones = new StringBuilder("Selecciona una palabra para jugar:\n");
+        for (int i = 0; i < palabras.size(); i++) {
+            opciones.append((i + 1)).append(". Palabra ").append(i + 1).append("\n");
+        }
+
+        String seleccionStr = JOptionPane.showInputDialog(null, opciones.toString());
+        if (seleccionStr == null) return;
+
+        int seleccion;
+        try {
+            seleccion = Integer.parseInt(seleccionStr) - 1;
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(null, "Parece que ocurrio un error");
+            return;
+        }
+
+        if (seleccion < 0 || seleccion >= palabras.size()) {
+            JOptionPane.showMessageDialog(null, "Seleccionaste un valor no definido");
+            return;
+        }
+
+        Palabra palabraSecreta = palabras.get(seleccion);
+        String secreta = palabraSecreta.getTexto().toUpperCase();
+
         int intentos = 6;
         boolean adivinada = false;
 
-        JOptionPane.showMessageDialog(null, "¡Bienvenido a Wordle! Adivina la palabra de 5 letras.");
+        JOptionPane.showMessageDialog(null, "Adivina la palabra de " + secreta.length() + " letras.");
 
         while (intentos > 0 && !adivinada) {
             String intento = JOptionPane.showInputDialog(null,
-                    "Tienes " + intentos + " intentos.\nIngresa una palabra de 5 letras:");
+                    "Intentos restantes: " + intentos + "\nIngresa una palabra de " + secreta.length() + " letras:");
 
-            if (intento == null) return; // usuario canceló
+            if (intento == null) return;
             intento = intento.trim().toUpperCase();
 
             if (intento.length() != secreta.length()) {
@@ -37,11 +56,11 @@ public class Logic{
             for (int i = 0; i < secreta.length(); i++) {
                 char c = intento.charAt(i);
                 if (c == secreta.charAt(i)) {
-                    resultado.append("🟩"); // letra correcta en lugar correcto
+                    resultado.append(" ✓ ");
                 } else if (secreta.contains(String.valueOf(c))) {
-                    resultado.append("🟨"); // letra correcta en lugar incorrecto
+                    resultado.append(" o ");
                 } else {
-                    resultado.append("⬜"); // letra no está
+                    resultado.append(" x ");
                 }
             }
 
@@ -49,14 +68,14 @@ public class Logic{
 
             if (intento.equals(secreta)) {
                 adivinada = true;
-                JOptionPane.showMessageDialog(null, "🎉 ¡Adivinaste la palabra!");
+                JOptionPane.showMessageDialog(null, "Lo lograste");
             } else {
                 intentos--;
             }
         }
 
         if (!adivinada) {
-            JOptionPane.showMessageDialog(null, "💀 Se acabaron los intentos. La palabra era: " + secreta);
+            JOptionPane.showMessageDialog(null, "Buen intento, la palabra era " + secreta);
         }
     }
 }
